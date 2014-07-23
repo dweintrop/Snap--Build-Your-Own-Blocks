@@ -1268,7 +1268,7 @@ BlockDialogMorph.prototype.addCategoryButton = function (category) {
         myself = this,
         colors = [
             SpriteMorph.prototype.paletteColor,
-            SpriteMorph.prototype.paletteColor.darker(50),
+            SpriteMorph.prototype.paletteColor.darker(40),
             SpriteMorph.prototype.blockColor[category]
         ],
         button;

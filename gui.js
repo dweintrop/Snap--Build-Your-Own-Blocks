@@ -136,8 +136,7 @@ IDE_Morph.prototype.setFlatDesign = function () {
     MorphicPreferences.isFlat = true;
     SpriteMorph.prototype.paletteColor = new Color(255, 255, 255);
     SpriteMorph.prototype.paletteTextColor = new Color(70, 70, 70);
-    StageMorph.prototype.paletteTextColor
-        = SpriteMorph.prototype.paletteTextColor;
+    StageMorph.prototype.paletteTextColor = SpriteMorph.prototype.paletteTextColor;
     StageMorph.prototype.paletteColor = SpriteMorph.prototype.paletteColor;
     SpriteMorph.prototype.sliderColor = SpriteMorph.prototype.paletteColor;
 
@@ -162,14 +161,10 @@ IDE_Morph.prototype.setFlatDesign = function () {
     IDE_Morph.prototype.scriptsPaneTexture = null;
     IDE_Morph.prototype.padding = 1;
 
-    SpriteIconMorph.prototype.labelColor
-        = IDE_Morph.prototype.buttonLabelColor;
-    CostumeIconMorph.prototype.labelColor
-        = IDE_Morph.prototype.buttonLabelColor;
-    SoundIconMorph.prototype.labelColor
-        = IDE_Morph.prototype.buttonLabelColor;
-    TurtleIconMorph.prototype.labelColor
-        = IDE_Morph.prototype.buttonLabelColor;
+    SpriteIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
+    CostumeIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
+    SoundIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
+    TurtleIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
 };
 
 IDE_Morph.prototype.setDefaultDesign();
@@ -771,7 +766,7 @@ IDE_Morph.prototype.createCategories = function () {
         var labelWidth = 75,
             colors = [
                 myself.frameColor,
-                myself.frameColor.darker(50),
+                myself.frameColor.darker(20),
                 SpriteMorph.prototype.blockColor[category]
             ],
             button;
@@ -780,6 +775,7 @@ IDE_Morph.prototype.createCategories = function () {
             colors,
             myself, // the IDE is the target
             function () {
+                console.log(category);
                 myself.currentCategory = category;
                 myself.categories.children.forEach(function (each) {
                     each.refresh();
