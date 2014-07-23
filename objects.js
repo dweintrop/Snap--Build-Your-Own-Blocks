@@ -4666,6 +4666,9 @@ StageMorph.prototype.inspectKeyEvent
     = CursorMorph.prototype.inspectKeyEvent;
 
 StageMorph.prototype.fireGreenFlagEvent = function () {
+
+    console.log('log here: greenFlag');
+    
     var procs = [],
         hats = [],
         ide = this.parentThatIsA(IDE_Morph),

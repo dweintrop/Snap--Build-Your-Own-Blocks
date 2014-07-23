@@ -135,6 +135,7 @@ ThreadManager.prototype.toggleProcess = function (block) {
 };
 
 ThreadManager.prototype.startProcess = function (block, isThreadSafe) {
+    console.log("log here: process");
     var active = this.findProcess(block),
         top = block.topBlock(),
         newProc;

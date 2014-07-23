@@ -21,7 +21,7 @@
 		<script type="text/javascript">
 			var world;
 			window.onload = function () {
-				world = new WorldMorph(document.getElementById('world'));
+				world = new WorldMorph(document.getElementById('world'), true); // second arg sets fillPage
                 world.worldCanvas.focus();
 				new IDE_Morph().openIn(world);
 				setInterval(loop, 1);
@@ -32,6 +32,7 @@
 		</script>
 	</head>
 	<body style="margin: 0;">
+		<div>hey goes here.</div>
 		<canvas id="world" tabindex="1" style="position: absolute;" />
     </body>
 </html>
