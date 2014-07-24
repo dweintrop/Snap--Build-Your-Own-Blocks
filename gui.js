@@ -98,18 +98,15 @@ IDE_Morph.prototype.setDefaultDesign = function () {
     MorphicPreferences.isFlat = false;
     SpriteMorph.prototype.paletteColor = new Color(55, 55, 55);
     SpriteMorph.prototype.paletteTextColor = new Color(230, 230, 230);
-    StageMorph.prototype.paletteTextColor
-        = SpriteMorph.prototype.paletteTextColor;
+    StageMorph.prototype.paletteTextColor = SpriteMorph.prototype.paletteTextColor;
     StageMorph.prototype.paletteColor = SpriteMorph.prototype.paletteColor;
-    SpriteMorph.prototype.sliderColor
-        = SpriteMorph.prototype.paletteColor.lighter(30);
+    SpriteMorph.prototype.sliderColor = SpriteMorph.prototype.paletteColor.lighter(30);
 
     IDE_Morph.prototype.buttonContrast = 30;
     IDE_Morph.prototype.backgroundColor = new Color(40, 40, 40);
     IDE_Morph.prototype.frameColor = SpriteMorph.prototype.paletteColor;
 
-    IDE_Morph.prototype.groupColor
-        = SpriteMorph.prototype.paletteColor.lighter(8);
+    IDE_Morph.prototype.groupColor = SpriteMorph.prototype.paletteColor.lighter(8);
     IDE_Morph.prototype.sliderColor = SpriteMorph.prototype.sliderColor;
     IDE_Morph.prototype.buttonLabelColor = new Color(255, 255, 255);
     IDE_Morph.prototype.tabColors = [
@@ -122,14 +119,10 @@ IDE_Morph.prototype.setDefaultDesign = function () {
     IDE_Morph.prototype.scriptsPaneTexture = 'scriptsPaneTexture.gif';
     IDE_Morph.prototype.padding = 5;
 
-    SpriteIconMorph.prototype.labelColor
-        = IDE_Morph.prototype.buttonLabelColor;
-    CostumeIconMorph.prototype.labelColor
-        = IDE_Morph.prototype.buttonLabelColor;
-    SoundIconMorph.prototype.labelColor
-        = IDE_Morph.prototype.buttonLabelColor;
-    TurtleIconMorph.prototype.labelColor
-        = IDE_Morph.prototype.buttonLabelColor;
+    SpriteIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
+    CostumeIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
+    SoundIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
+    TurtleIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
 };
 
 IDE_Morph.prototype.setFlatDesign = function () {
@@ -167,7 +160,7 @@ IDE_Morph.prototype.setFlatDesign = function () {
     TurtleIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
 };
 
-IDE_Morph.prototype.setDefaultDesign();
+IDE_Morph.prototype.setFlatDesign();
 
 // IDE_Morph instance creation:
 
@@ -2238,8 +2231,7 @@ IDE_Morph.prototype.settingsMenu = function () {
     addPreference(
         'Codification support',
         function () {
-            StageMorph.prototype.enableCodeMapping =
-                !StageMorph.prototype.enableCodeMapping;
+            StageMorph.prototype.enableCodeMapping = !StageMorph.prototype.enableCodeMapping;
             myself.currentSprite.blocksCache.variables = null;
             myself.currentSprite.paletteCache.variables = null;
             myself.refreshPalette();
@@ -2696,7 +2688,7 @@ IDE_Morph.prototype.newProject = function () {
     StageMorph.prototype.hiddenPrimitives = {};
     StageMorph.prototype.codeMappings = {};
     StageMorph.prototype.codeHeaders = {};
-    StageMorph.prototype.enableCodeMapping = false;
+    StageMorph.prototype.enableCodeMapping = true;
     SpriteMorph.prototype.useFlatLineEnds = false;
     this.setProjectName('');
     this.projectNotes = '';
@@ -2912,7 +2904,7 @@ IDE_Morph.prototype.rawOpenProjectString = function (str) {
     StageMorph.prototype.hiddenPrimitives = {};
     StageMorph.prototype.codeMappings = {};
     StageMorph.prototype.codeHeaders = {};
-    StageMorph.prototype.enableCodeMapping = false;
+    StageMorph.prototype.enableCodeMapping = true;
     if (Process.prototype.isCatchingErrors) {
         try {
             this.serializer.openProject(this.serializer.load(str), this);
@@ -2946,7 +2938,7 @@ IDE_Morph.prototype.rawOpenCloudDataString = function (str) {
     StageMorph.prototype.hiddenPrimitives = {};
     StageMorph.prototype.codeMappings = {};
     StageMorph.prototype.codeHeaders = {};
-    StageMorph.prototype.enableCodeMapping = false;
+    StageMorph.prototype.enableCodeMapping = true;
     if (Process.prototype.isCatchingErrors) {
         try {
             model = this.serializer.parse(str);

@@ -4154,19 +4154,16 @@ StageMorph.prototype.dimensions = new Point(480, 360); // unscaled extent
 
 StageMorph.prototype.frameRate = 0; // unscheduled per default
 
-StageMorph.prototype.isCachingPrimitives
-    = SpriteMorph.prototype.isCachingPrimitives;
+StageMorph.prototype.isCachingPrimitives = SpriteMorph.prototype.isCachingPrimitives;
 
-StageMorph.prototype.sliderColor
-    = SpriteMorph.prototype.sliderColor;
+StageMorph.prototype.sliderColor = SpriteMorph.prototype.sliderColor;
 
-StageMorph.prototype.paletteTextColor
-    = SpriteMorph.prototype.paletteTextColor;
+StageMorph.prototype.paletteTextColor = SpriteMorph.prototype.paletteTextColor;
 
 StageMorph.prototype.hiddenPrimitives = {};
 StageMorph.prototype.codeMappings = {};
 StageMorph.prototype.codeHeaders = {};
-StageMorph.prototype.enableCodeMapping = false;
+StageMorph.prototype.enableCodeMapping = true;
 
 // StageMorph instance creation
 
