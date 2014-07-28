@@ -125,7 +125,7 @@ PrototypeHatBlockMorph*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
-modules.objects = '2014-July-22';
+modules.objects = '2014-July-25';
 
 var SpriteMorph;
 var StageMorph;
@@ -182,7 +182,8 @@ SpriteMorph.prototype.blockColor = {
 
 SpriteMorph.prototype.paletteColor = new Color(55, 55, 55);
 SpriteMorph.prototype.paletteTextColor = new Color(230, 230, 230);
-SpriteMorph.prototype.sliderColor = SpriteMorph.prototype.paletteColor.lighter(30);
+SpriteMorph.prototype.sliderColor
+    = SpriteMorph.prototype.paletteColor.lighter(30);
 SpriteMorph.prototype.isCachingPrimitives = true;
 
 SpriteMorph.prototype.enableNesting = true;
@@ -1023,6 +1024,11 @@ SpriteMorph.prototype.initBlocks = function () {
             spec: 'split %s by %delim',
             defaults: [localize('hello') + ' ' + localize('world'), " "]
         },
+        reportJSFunction: { // experimental
+            type: 'reporter',
+            category: 'operators',
+            spec: 'JavaScript function ( %mult%s ) { %code }'
+        },
         reportTypeOf: { // only in dev mode for debugging
             dev: true,
             type: 'reporter',
@@ -1330,6 +1336,7 @@ SpriteMorph.prototype.init = function (globals) {
 
 SpriteMorph.prototype.fullCopy = function () {
     var c = SpriteMorph.uber.fullCopy.call(this),
+        myself = this,
         arr = [],
         cb;
 
@@ -1351,7 +1358,11 @@ SpriteMorph.prototype.fullCopy = function () {
         });
     });
     this.costumes.asArray().forEach(function (costume) {
-        arr.push(costume.copy());
+        var cst = costume.copy();
+        arr.push(cst);
+        if (costume === myself.costume) {
+            c.costume = cst;
+        }
     });
     c.costumes = new List(arr);
     arr = [];
@@ -1913,6 +1924,8 @@ SpriteMorph.prototype.blockTemplates = function (category) {
         blocks.push('-');
         blocks.push(block('reportIsA'));
         blocks.push(block('reportIsIdentical'));
+        blocks.push('-');
+        blocks.push(block('reportJSFunction'));
 
     // for debugging: ///////////////
 
@@ -4088,20 +4101,21 @@ SpriteMorph.prototype.reactToDropOf = function (morph, hand) {
 
 // SpriteMorph screenshots
 
-SpriteMorph.prototype.newCostumeName = function (name) {
-
-    function stemOf(aName) {
-        var ix = aName.indexOf('(');
-        if (ix < 0) {return aName; }
-        return aName.substring(0, ix);
+SpriteMorph.prototype.newCostumeName = function (name, ignoredCostume) {
+    var ix = name.indexOf('('),
+        stem = (ix < 0) ? name : name.substring(0, ix),
+        count = 1,
+        newName = stem,
+        all = this.costumes.asArray().filter(
+            function (each) {return each !== ignoredCostume; }
+        ).map(
+            function (each) {return each.name; }
+        );
+    while (contains(all, newName)) {
+        count += 1;
+        newName = stem + '(' + count + ')';
     }
-
-    var stem = stemOf(name),
-        similar = this.costumes.asArray().filter(function (eachCostume) {
-            return stemOf(eachCostume.name) === stem;
-        }).length;
-
-    return stem + (similar ? '(' + (similar + 1) + ')' : '');
+    return newName;
 };
 
 SpriteMorph.prototype.doScreenshot = function (imgSource, data) {
@@ -4154,16 +4168,19 @@ StageMorph.prototype.dimensions = new Point(480, 360); // unscaled extent
 
 StageMorph.prototype.frameRate = 0; // unscheduled per default
 
-StageMorph.prototype.isCachingPrimitives = SpriteMorph.prototype.isCachingPrimitives;
+StageMorph.prototype.isCachingPrimitives
+    = SpriteMorph.prototype.isCachingPrimitives;
 
-StageMorph.prototype.sliderColor = SpriteMorph.prototype.sliderColor;
+StageMorph.prototype.sliderColor
+    = SpriteMorph.prototype.sliderColor;
 
-StageMorph.prototype.paletteTextColor = SpriteMorph.prototype.paletteTextColor;
+StageMorph.prototype.paletteTextColor
+    = SpriteMorph.prototype.paletteTextColor;
 
 StageMorph.prototype.hiddenPrimitives = {};
 StageMorph.prototype.codeMappings = {};
 StageMorph.prototype.codeHeaders = {};
-StageMorph.prototype.enableCodeMapping = true;
+StageMorph.prototype.enableCodeMapping = false;
 
 // StageMorph instance creation
 
@@ -4662,9 +4679,6 @@ StageMorph.prototype.inspectKeyEvent
     = CursorMorph.prototype.inspectKeyEvent;
 
 StageMorph.prototype.fireGreenFlagEvent = function () {
-
-    console.log('log here: greenFlag');
-    
     var procs = [],
         hats = [],
         ide = this.parentThatIsA(IDE_Morph),
@@ -4993,6 +5007,8 @@ StageMorph.prototype.blockTemplates = function (category) {
         blocks.push('-');
         blocks.push(block('reportIsA'));
         blocks.push(block('reportIsIdentical'));
+        blocks.push('-');
+        blocks.push(block('reportJSFunction'));
 
     // for debugging: ///////////////
 
@@ -5666,14 +5682,16 @@ SpriteBubbleMorph.prototype.fixLayout = function () {
 
 function Costume(canvas, name, rotationCenter) {
     this.contents = canvas || newCanvas();
-    this.shrinkToFit(this.maxExtent);
+    this.shrinkToFit(this.maxExtent());
     this.name = name || null;
     this.rotationCenter = rotationCenter || this.center();
     this.version = Date.now(); // for observer optimization
     this.loaded = null; // for de-serialization only
 }
 
-Costume.prototype.maxExtent = StageMorph.prototype.dimensions;
+Costume.prototype.maxExtent = function () {
+    return StageMorph.prototype.dimensions;
+};
 
 Costume.prototype.toString = function () {
     return 'a Costume(' + this.name + ')';
@@ -5958,7 +5976,7 @@ SVG_Costume.uber = Costume.prototype;
 
 function SVG_Costume(svgImage, name, rotationCenter) {
     this.contents = svgImage;
-    this.shrinkToFit(this.maxExtent);
+    this.shrinkToFit(this.maxExtent());
     this.name = name || null;
     this.rotationCenter = rotationCenter || this.center();
     this.version = Date.now(); // for observer optimization
@@ -6006,7 +6024,7 @@ CostumeEditorMorph.prototype.constructor = CostumeEditorMorph;
 CostumeEditorMorph.uber = Morph.prototype;
 
 // CostumeEditorMorph preferences settings:
-CostumeEditorMorph.prototype.size = Costume.prototype.maxExtent;
+CostumeEditorMorph.prototype.size = Costume.prototype.maxExtent();
 
 // CostumeEditorMorph instance creation
 

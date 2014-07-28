@@ -387,9 +387,12 @@ SnapSerializer.prototype.loadProjectModel = function (xmlNode) {
             Math.max(+model.stage.attributes.height, 180);
     }
     project.stage.setExtent(StageMorph.prototype.dimensions);
-    SpriteMorph.prototype.useFlatLineEnds = model.stage.attributes.lines === 'flat';
-    project.stage.isThreadSafe = model.stage.attributes.threadsafe === 'true';
-    StageMorph.prototype.enableCodeMapping = model.stage.attributes.codify === 'true';
+    SpriteMorph.prototype.useFlatLineEnds =
+        model.stage.attributes.lines === 'flat';
+    project.stage.isThreadSafe =
+        model.stage.attributes.threadsafe === 'true';
+    StageMorph.prototype.enableCodeMapping =
+        model.stage.attributes.codify === 'true';
 
     model.hiddenPrimitives = model.project.childNamed('hidden');
     if (model.hiddenPrimitives) {

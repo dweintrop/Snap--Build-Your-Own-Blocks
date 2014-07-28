@@ -69,7 +69,7 @@ SpeechBubbleMorph*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
-modules.gui = '2014-July-18';
+modules.gui = '2014-July-25';
 
 // Declarations
 
@@ -98,15 +98,18 @@ IDE_Morph.prototype.setDefaultDesign = function () {
     MorphicPreferences.isFlat = false;
     SpriteMorph.prototype.paletteColor = new Color(55, 55, 55);
     SpriteMorph.prototype.paletteTextColor = new Color(230, 230, 230);
-    StageMorph.prototype.paletteTextColor = SpriteMorph.prototype.paletteTextColor;
+    StageMorph.prototype.paletteTextColor
+        = SpriteMorph.prototype.paletteTextColor;
     StageMorph.prototype.paletteColor = SpriteMorph.prototype.paletteColor;
-    SpriteMorph.prototype.sliderColor = SpriteMorph.prototype.paletteColor.lighter(30);
+    SpriteMorph.prototype.sliderColor
+        = SpriteMorph.prototype.paletteColor.lighter(30);
 
     IDE_Morph.prototype.buttonContrast = 30;
     IDE_Morph.prototype.backgroundColor = new Color(40, 40, 40);
     IDE_Morph.prototype.frameColor = SpriteMorph.prototype.paletteColor;
 
-    IDE_Morph.prototype.groupColor = SpriteMorph.prototype.paletteColor.lighter(8);
+    IDE_Morph.prototype.groupColor
+        = SpriteMorph.prototype.paletteColor.lighter(8);
     IDE_Morph.prototype.sliderColor = SpriteMorph.prototype.sliderColor;
     IDE_Morph.prototype.buttonLabelColor = new Color(255, 255, 255);
     IDE_Morph.prototype.tabColors = [
@@ -119,17 +122,22 @@ IDE_Morph.prototype.setDefaultDesign = function () {
     IDE_Morph.prototype.scriptsPaneTexture = 'scriptsPaneTexture.gif';
     IDE_Morph.prototype.padding = 5;
 
-    SpriteIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
-    CostumeIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
-    SoundIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
-    TurtleIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
+    SpriteIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    CostumeIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    SoundIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    TurtleIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
 };
 
 IDE_Morph.prototype.setFlatDesign = function () {
     MorphicPreferences.isFlat = true;
     SpriteMorph.prototype.paletteColor = new Color(255, 255, 255);
     SpriteMorph.prototype.paletteTextColor = new Color(70, 70, 70);
-    StageMorph.prototype.paletteTextColor = SpriteMorph.prototype.paletteTextColor;
+    StageMorph.prototype.paletteTextColor
+        = SpriteMorph.prototype.paletteTextColor;
     StageMorph.prototype.paletteColor = SpriteMorph.prototype.paletteColor;
     SpriteMorph.prototype.sliderColor = SpriteMorph.prototype.paletteColor;
 
@@ -154,13 +162,17 @@ IDE_Morph.prototype.setFlatDesign = function () {
     IDE_Morph.prototype.scriptsPaneTexture = null;
     IDE_Morph.prototype.padding = 1;
 
-    SpriteIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
-    CostumeIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
-    SoundIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
-    TurtleIconMorph.prototype.labelColor = IDE_Morph.prototype.buttonLabelColor;
+    SpriteIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    CostumeIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    SoundIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    TurtleIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
 };
 
-IDE_Morph.prototype.setFlatDesign();
+IDE_Morph.prototype.setDefaultDesign();
 
 // IDE_Morph instance creation:
 
@@ -759,7 +771,7 @@ IDE_Morph.prototype.createCategories = function () {
         var labelWidth = 75,
             colors = [
                 myself.frameColor,
-                myself.frameColor.darker(20),
+                myself.frameColor.darker(50),
                 SpriteMorph.prototype.blockColor[category]
             ],
             button;
@@ -768,7 +780,6 @@ IDE_Morph.prototype.createCategories = function () {
             colors,
             myself, // the IDE is the target
             function () {
-                console.log(category);
                 myself.currentCategory = category;
                 myself.categories.children.forEach(function (each) {
                     each.refresh();
@@ -1000,11 +1011,13 @@ IDE_Morph.prototype.createSpriteBar = function () {
     this.spriteBar.add(nameField);
     nameField.drawNew();
     nameField.accept = function () {
-        myself.currentSprite.setName(nameField.getValue());
+        var newName = nameField.getValue();
+        myself.currentSprite.setName(
+            myself.newSpriteName(newName, myself.currentSprite)
+        );
+        nameField.setContents(myself.currentSprite.name);
     };
-    this.spriteBar.reactToEdit = function () {
-        myself.currentSprite.setName(nameField.getValue());
-    };
+    this.spriteBar.reactToEdit = nameField.accept;
 
     // padlock
     padlock = new ToggleMorph(
@@ -1769,8 +1782,7 @@ IDE_Morph.prototype.addNewSprite = function () {
     var sprite = new SpriteMorph(this.globalVariables),
         rnd = Process.prototype.reportRandom;
 
-    sprite.name = sprite.name
-        + (this.corral.frame.contents.children.length + 1);
+    sprite.name = this.newSpriteName(sprite.name);
     sprite.setCenter(this.stage.center());
     this.stage.add(sprite);
 
@@ -1791,8 +1803,7 @@ IDE_Morph.prototype.paintNewSprite = function () {
         cos = new Costume(),
         myself = this;
 
-    sprite.name = sprite.name +
-        (this.corral.frame.contents.children.length + 1);
+    sprite.name = this.newSpriteName(sprite.name);
     sprite.setCenter(this.stage.center());
     this.stage.add(sprite);
     this.sprites.add(sprite);
@@ -1813,7 +1824,7 @@ IDE_Morph.prototype.paintNewSprite = function () {
 IDE_Morph.prototype.duplicateSprite = function (sprite) {
     var duplicate = sprite.fullCopy();
 
-    duplicate.name = sprite.name + '(2)';
+    duplicate.name = this.newSpriteName(sprite.name);
     duplicate.setPosition(this.world().hand.position());
     this.stage.add(duplicate);
     duplicate.keepWithin(this.stage);
@@ -1842,6 +1853,23 @@ IDE_Morph.prototype.removeSprite = function (sprite) {
     ) || this.stage;
 
     this.selectSprite(this.currentSprite);
+};
+
+IDE_Morph.prototype.newSpriteName = function (name, ignoredSprite) {
+    var ix = name.indexOf('('),
+        stem = (ix < 0) ? name : name.substring(0, ix),
+        count = 1,
+        newName = stem,
+        all = this.sprites.asArray().filter(
+            function (each) {return each !== ignoredSprite; }
+        ).map(
+            function (each) {return each.name; }
+        );
+    while (contains(all, newName)) {
+        count += 1;
+        newName = stem + '(' + count + ')';
+    }
+    return newName;
 };
 
 // IDE_Morph menus
@@ -2231,7 +2259,8 @@ IDE_Morph.prototype.settingsMenu = function () {
     addPreference(
         'Codification support',
         function () {
-            StageMorph.prototype.enableCodeMapping = !StageMorph.prototype.enableCodeMapping;
+            StageMorph.prototype.enableCodeMapping =
+                !StageMorph.prototype.enableCodeMapping;
             myself.currentSprite.blocksCache.variables = null;
             myself.currentSprite.paletteCache.variables = null;
             myself.refreshPalette();
@@ -2510,7 +2539,9 @@ IDE_Morph.prototype.aboutSnap = function () {
         + '\n\nNathan Dinsmore: Saving/Loading, Snap-Logo Design, '
         + 'countless bugfixes'
         + '\nKartik Chandra: Paint Editor'
-        + '\nYuan Yuan: Graphic Effects'
+        + '\nMichael Ball: Time/Date UI, many bugfixes'
+        + '\n"Ava" Yuan Yuan: Graphic Effects'
+        + '\nKyle Hotchkiss: Block search design'
         + '\nIan Reynolds: UI Design, Event Bindings, '
         + 'Sound primitives'
         + '\nIvan Motyashov: Initial Squeak Porting'
@@ -2688,7 +2719,7 @@ IDE_Morph.prototype.newProject = function () {
     StageMorph.prototype.hiddenPrimitives = {};
     StageMorph.prototype.codeMappings = {};
     StageMorph.prototype.codeHeaders = {};
-    StageMorph.prototype.enableCodeMapping = true;
+    StageMorph.prototype.enableCodeMapping = false;
     SpriteMorph.prototype.useFlatLineEnds = false;
     this.setProjectName('');
     this.projectNotes = '';
@@ -2904,7 +2935,7 @@ IDE_Morph.prototype.rawOpenProjectString = function (str) {
     StageMorph.prototype.hiddenPrimitives = {};
     StageMorph.prototype.codeMappings = {};
     StageMorph.prototype.codeHeaders = {};
-    StageMorph.prototype.enableCodeMapping = true;
+    StageMorph.prototype.enableCodeMapping = false;
     if (Process.prototype.isCatchingErrors) {
         try {
             this.serializer.openProject(this.serializer.load(str), this);
@@ -2938,7 +2969,7 @@ IDE_Morph.prototype.rawOpenCloudDataString = function (str) {
     StageMorph.prototype.hiddenPrimitives = {};
     StageMorph.prototype.codeMappings = {};
     StageMorph.prototype.codeHeaders = {};
-    StageMorph.prototype.enableCodeMapping = true;
+    StageMorph.prototype.enableCodeMapping = false;
     if (Process.prototype.isCatchingErrors) {
         try {
             model = this.serializer.parse(str);
@@ -5528,7 +5559,10 @@ CostumeIconMorph.prototype.renameCostume = function () {
         null,
         function (answer) {
             if (answer && (answer !== costume.name)) {
-                costume.name = wardrobe.sprite.newCostumeName(answer);
+                costume.name = wardrobe.sprite.newCostumeName(
+                    answer,
+                    costume
+                );
                 costume.version = Date.now();
                 ide.hasChangedMedia = true;
             }
@@ -5543,16 +5577,8 @@ CostumeIconMorph.prototype.renameCostume = function () {
 CostumeIconMorph.prototype.duplicateCostume = function () {
     var wardrobe = this.parentThatIsA(WardrobeMorph),
         ide = this.parentThatIsA(IDE_Morph),
-        newcos = this.object.copy(),
-        split = newcos.name.split(" ");
-    if (split[split.length - 1] === "copy") {
-        newcos.name += " 2";
-    } else if (isNaN(split[split.length - 1])) {
-        newcos.name = newcos.name + " copy";
-    } else {
-        split[split.length - 1] = Number(split[split.length - 1]) + 1;
-        newcos.name = split.join(" ");
-    }
+        newcos = this.object.copy();
+    newcos.name = wardrobe.sprite.newCostumeName(newcos.name);
     wardrobe.sprite.addCostume(newcos);
     wardrobe.updateList();
     if (ide) {
